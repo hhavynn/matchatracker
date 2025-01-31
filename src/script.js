@@ -73,3 +73,65 @@ recipeForm.addEventListener('submit', (e) => {
 // Initial display
 displayLogs();
 displayRecipes();
+
+// Fetch logs from the backend
+async function fetchLogs() {
+  const response = await fetch("/api/logs");
+  const data = await response.json();
+  logsList.innerHTML = data.map(
+    (log) => `<li><strong>${log.date}</strong>: ${log.type} - ${log.notes}</li>`
+  ).join("");
+}
+
+// Fetch recipes from the backend
+async function fetchRecipes() {
+  const response = await fetch("/api/recipes");
+  const data = await response.json();
+  recipesList.innerHTML = data.map(
+    (recipe) => `<li><strong>${recipe.name}</strong><br>
+    <em>Ingredients:</em> ${recipe.ingredients}<br>
+    <em>Steps:</em> ${recipe.steps}</li>`
+  ).join("");
+}
+
+// Handle Log Submission
+logForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const newLog = {
+    date: document.getElementById("date").value,
+    type: document.getElementById("type").value,
+    notes: document.getElementById("notes").value,
+  };
+
+  await fetch("/api/logs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newLog),
+  });
+
+  fetchLogs();
+  logForm.reset();
+});
+
+// Handle Recipe Submission
+recipeForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const newRecipe = {
+    name: document.getElementById("recipe-name").value,
+    ingredients: document.getElementById("ingredients").value,
+    steps: document.getElementById("steps").value,
+  };
+
+  await fetch("/api/recipes", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newRecipe),
+  });
+
+  fetchRecipes();
+  recipeForm.reset();
+});
+
+// Fetch existing data on page load
+fetchLogs();
+fetchRecipes();
