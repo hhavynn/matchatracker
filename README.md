@@ -10,4 +10,4 @@ A simple app to track matcha consumption and store matcha recipes.
 ## Technologies Used
 - HTML, CSS, JavaScript
 - Node.js, Express.js
-- SQLite (or another database)
+- SQLite
